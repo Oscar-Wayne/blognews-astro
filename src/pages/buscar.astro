@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+---
+
+<Layout title="Blog de Noticias - Búsqueda">
+  <h1>Buscar Noticias</h1>
+  <form id="searchForm">
+    <input type="text" name="searchTerm" placeholder="Ingrese un término de búsqueda" required>
+    <button type="submit">Buscar</button>
+  </form>
+
+  <p id="error" class="error" style="display: none;"></p>
+  <p id="noResults" class="no-results" style="display: none;">No se encontraron resultados.</p>
+  <section id="searchResults" class="articles-grid"></section>
+</Layout>
+
+<style>
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: rgb(var(--accent));
+      text-align: center;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: rgb(var(--accent));
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: rgb(var(--accent-dark));
+    }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .no-results {
+      text-align: center;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+
+<script>
+  import { searchNews } from '../lib/api';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.getElementById('searchForm') as HTMLFormElement;
+    const searchResults = document.getElementById('searchResults') as HTMLElement;
+    const errorElement = document.getElementById('error') as HTMLElement;
+    const noResultsElement = document.getElementById('noResults') as HTMLElement;
+
+    if (searchForm && searchResults && errorElement && noResultsElement) {
+      searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(searchForm);
+        const searchTerm = formData.get('searchTerm') as string;
+
+        errorElement.style.display = 'none';
+        noResultsElement.style.display = 'none';
+        searchResults.innerHTML = '';
+
+        try {
+          const results = await searchNews(searchTerm);
+          if (results.length === 0) {
+            noResultsElement.style.display = 'block';
+          } else {
+            results.forEach(article => {
+              const articleCard = document.createElement('article');
+              articleCard.className = 'article-card';
+              articleCard.innerHTML = `
+                <h2><a href="${article.url}" target="_blank" rel="noopener noreferrer">${article.title}</a></h2>
+                <p class="date">${new Date(article.publishedAt).toLocaleDateString()}</p>
+                <p>${article.description}</p>
+                <a href="${article.url}" class="read-more" target="_blank" rel="noopener noreferrer">Leer más</a>
+              `;
+              searchResults.appendChild(articleCard);
+            });
+          }
+        } catch (error) {
+          errorElement.textContent = error instanceof Error ? error.message : 'An error occurred while searching for news.';
+          errorElement.style.display = 'block';
+        }
+      });
+    }
+  });
+</script>
