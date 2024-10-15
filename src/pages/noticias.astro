@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+
+const articles = [
+	{
+		title: "Revolución en IA: GPT-4 supera pruebas de razonamiento humano",
+		description: "El nuevo modelo de lenguaje de OpenAI muestra capacidades sorprendentes en resolución de problemas complejos.",
+		date: "2023-05-16",
+		url: "/noticias/gpt4-supera-pruebas"
+	},
+	{
+		title: "Última hora: Descubrimiento científico revolucionario",
+		description: "Científicos anuncian un avance que podría cambiar el futuro de la medicina.",
+		date: "2023-05-15",
+		url: "/noticias/descubrimiento-cientifico"
+	},
+	{
+		title: "Nuevo récord en el mundo del deporte",
+		description: "Un atleta rompe la marca mundial en una competición internacional.",
+		date: "2023-05-14",
+		url: "/noticias/record-deportivo"
+	},
+	{
+		title: "Avances en tecnología sostenible",
+		description: "Empresas tecnológicas presentan innovaciones para combatir el cambio climático.",
+		date: "2023-05-13",
+		url: "/noticias/tecnologia-sostenible"
+	},
+	{
+		title: "Crisis económica: Medidas de emergencia",
+		description: "Gobiernos anuncian planes para enfrentar la recesión global.",
+		date: "2023-05-12",
+		url: "/noticias/crisis-economica"
+	},
+	{
+		title: "Descubrimiento arqueológico en Sudamérica",
+		description: "Arqueólogos encuentran restos de una civilización desconocida.",
+		date: "2023-05-11",
+		url: "/noticias/descubrimiento-arqueologico"
+	}
+];
+---
+
+<Layout title="Blog de Noticias - Todas las Noticias">
+	<h1>Todas las Noticias</h1>
+	<section class="articles-grid">
+		{articles.map(article => (
+			<ArticleCard
+				title={article.title}
+				description={article.description}
+				date={article.date}
+				url={article.url}
+			/>
+		))}
+	</section>
+</Layout>
+
+<style>
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+		color: rgb(var(--accent));
+		text-align: center;
+	}
+	.articles-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+	}
+</style>

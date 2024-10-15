@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getTopNews } from '../lib/api';
+
+const articles = await getTopNews();
+---
+
+<Layout title="Blog de Noticias - Inicio">
+	<h1>Últimas Noticias</h1>
+	<section class="articles-grid">
+		{articles.map(article => (
+			<ArticleCard
+				title={article.title}
+				description={article.description}
+				date={new Date(article.publishedAt).toLocaleDateString()}
+				url={article.url}
+			/>
+		))}
+	</section>
+</Layout>
+
+<style>
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+		color: rgb(var(--accent));
+		text-align: center;
+	}
+	.articles-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+	}
+</style>
